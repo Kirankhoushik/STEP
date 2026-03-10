@@ -1,0 +1,21 @@
+import java.util.*;
+
+class InventoryManager {
+    HashMap<String, Integer> stock = new HashMap<>();
+    HashMap<String, Queue<Integer>> waiting = new HashMap<>();
+
+    synchronized boolean purchaseItem(String productId, int userId) {
+        int s = stock.getOrDefault(productId, 0);
+        if (s > 0) {
+            stock.put(productId, s - 1);
+            return true;
+        }
+        waiting.putIfAbsent(productId, new LinkedList<>());
+        waiting.get(productId).offer(userId);
+        return false;
+    }
+
+    int checkStock(String productId) {
+        return stock.getOrDefault(productId, 0);
+    }
+}
